@@ -16,8 +16,9 @@ if (process.env.DATABASE_URL) {
     logging: false
   });
 } else {
-  // Serverless/Local fallback uses SQLite inside /tmp for Vercel's read-only file system
-  const storagePath = process.env.VERCEL ? '/tmp/database.sqlite' : path.join(__dirname, '..', 'database.sqlite');
+  // Serverless Vercel environment uses purely IN-MEMORY sqlite
+  // This bypasses ALL Read-Only file system errors 
+  const storagePath = process.env.VERCEL ? ':memory:' : path.join(__dirname, '..', 'database.sqlite');
   
   sequelize = new Sequelize({
     dialect: 'sqlite',
