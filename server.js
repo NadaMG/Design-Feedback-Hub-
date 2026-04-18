@@ -66,4 +66,6 @@ sequelize.sync({ alter: true }).then(async () => {
   }
 }).catch(err => {
   console.error('Database sync failed:', err);
+}).catch(err => {
+  console.error("Vercel DB Error:", err);
 });
