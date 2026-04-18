@@ -50,14 +50,20 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Sync DB and start server
+// Export app for Vercel
+module.exports = app;
+
+// Sync DB and start server locally (Vercel ignores app.listen)
 sequelize.sync({ alter: true }).then(async () => {
   const { seedDatabase } = require('./seed');
   await seedDatabase();
-  app.listen(PORT, () => {
-    console.log(`\n🚀 Design Feedback Hub running at http://localhost:${PORT}`);
-    console.log(`📦 Database synced successfully\n`);
-  });
+  
+  if (!process.env.VERCEL) {
+    app.listen(PORT, () => {
+      console.log(`\n🚀 Design Feedback Hub running at http://localhost:${PORT}`);
+      console.log(`📦 Database synced successfully\n`);
+    });
+  }
 }).catch(err => {
   console.error('Database sync failed:', err);
 });
